@@ -28,20 +28,7 @@ def parse_airport_IDs(csv_filename):
     return (airport_ids)
 
 
-def parse_csv_with_DatesAndIDs(csv_filename):
-    with open(csv_filename) as f:
-        airport_ids = []
-        for line in f:
-            source_id = line.split(',')[1].strip('"')[:3]
-            print(source_id)
-            # airport_ids.append(source_id)
-    # airport_ids = airport_ids[1:]
-    # print(airport_ids)
-    return (airport_ids)
-
-
 if __name__ == '__main__':
     # airport_ids=parse_airport_IDs("airport_identifiers_andrew.csv")
     # get_weath_hist(airport_ids)
-    print(parse_csv_with_DatesAndIDs(''))
     pass
