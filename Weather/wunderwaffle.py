@@ -91,6 +91,7 @@ def ghg():
         db.segment.insert(row)
 
 if __name__ == '__main__':
+    ghg()
     # airport_ids=parse_airport_IDs("airport_identifiers_andrew.csv")
     # get_weath_hist(airport_ids)
     # dictlist = clearoff_rb_on_csv('00_LAX.csv')
@@ -100,4 +101,4 @@ if __name__ == '__main__':
     #     for list in dictlist[1:0]:
     #         f.write(bytes(list, 'UTF-8'))
     # pass
-    ghg()
+
