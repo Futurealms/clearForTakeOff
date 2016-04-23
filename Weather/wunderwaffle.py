@@ -28,27 +28,6 @@ def parse_airport_IDs(csv_filename):
     return (airport_ids)
 
 
-def clearoff_rb_on_csv(csv_filename):
-    with open(csv_filename) as f:
-        airport_ids = []
-        bundle = []
-        for line in f:
-            source_data = line
-            # source_id = line.split(',')[5].strip('"')
-            # print(source_data)
-            source_1 = source_data[:-7].split(',')
-            print(source_1)
-            airport_ids.append(source_1)
-            i = iter(source_1)
-            bundle.append(dict(zip(i, i)))
-    return bundle
-
-    # airport_ids.append(source_id)
-    # airport_ids = airport_ids[1:]
-    # print(airport_ids)
-    return (airport_ids)
-
-
 def insert_or_update(db_name, db_table, entry_list):
     '''
     Бере список фільмів і закидає їх у таблицю бази даних.
@@ -59,34 +38,66 @@ def insert_or_update(db_name, db_table, entry_list):
     :return:
     '''
     import dataset
-    k = 1
     db = dataset.connect(db_name)
     table = db[db_table]
-    for entry in entry_list:
-        dict_by_title = imdb_get_dictionary_by_title(entry)
-        existed_id = table.find_one(imdb_id=dict_by_title['imdb_id'])
-        # print(existed_id)
-        if existed_id != None:
-            # print(existed_id, 'funn')
-            if table.find_one(imdb_id=dict_by_title['imdb_id'])['imdb_id'] == dict_by_title['imdb_id']:
-                table.update(dict_by_title, ['imdb_id'])
-                # print('\nentry updateted')
-        else:
-            # print(existed_id, 'funn')
-            table.insert(dict_by_title)
-            # print('\nnew entry created')
-        # drawProgressBar(k / len(entry_list))
-        k += 1
-        users = db['user'].all()
-        # except:
-        #     print('\n', entry, ': sorry, some error ocurred :(')
-        #     k += 1
+    # existed_id = table.find_one(imdb_id=dict_by_title['imdb_id'])
+    # if existed_id != None:
+    # print(existed_id, 'funn')
+    # if table.find_one(imdb_id=dict_by_title['imdb_id'])['imdb_id'] == dict_by_title['imdb_id']:
+    #     table.update(dict_by_title, ['imdb_id'])
+    # print('\nentry updateted')
+    # else:
+    table.insert(entry_list)
     print('all done!')
 
+
+def clearoff_rb_on_csv(csv_filename):
+    city='LAX'
+    with open("_{:02d}_{}.csv".format(0, city), "wb") as file_new:
+        # for list in dictlist[1:0]:
+        with open(csv_filename) as f:
+            airport_ids = []
+            bundle = []
+            for line in f:
+                source_data = line
+                # source_id = line.split(',')[5].strip('"')
+                # print(source_data)
+                source_1 = source_data[:-7].split(',')
+                print(source_1)
+                bundle.append(source_1)
+                file_new.write(bytes(source_data[:-7].join('\n'), 'UTF-8'))
+    return bundle
+
+    # airport_ids.append(source_id)
+    # airport_ids = airport_ids[1:]
+    # print(airport_ids)
+    return (airport_ids)
+
+def ghg():
+    import csv
+    from pymongo import MongoClient
+    csvfile = open('00_LAX.csv', 'r')
+    reader = csv.DictReader(csvfile)
+    mongo_client = MongoClient()
+    db = mongo_client.name_of_MONGODb_Base
+    db.segment.drop()
+    header = reader.fieldnames
+
+    for each in reader:
+        row = {}
+        for field in header:
+            row[field] = each[field]
+
+        db.segment.insert(row)
 
 if __name__ == '__main__':
     # airport_ids=parse_airport_IDs("airport_identifiers_andrew.csv")
     # get_weath_hist(airport_ids)
-    print(clearoff_rb_on_csv('00_LAX.csv'))
-
-    pass
+    # dictlist = clearoff_rb_on_csv('00_LAX.csv')
+    # print(dictlist[1:])
+    # with open("{:02d}_{}.csv".format(cities.index(city), city), "wb") as f:
+    # with open("_{:02d}_{}.csv".format(0, city), "wb") as f:
+    #     for list in dictlist[1:0]:
+    #         f.write(bytes(list, 'UTF-8'))
+    # pass
+    ghg()
