@@ -1,5 +1,6 @@
 import csv
 
+import dataset
 import requests
 
 
@@ -28,7 +29,7 @@ def parse_airport_IDs(csv_filename):
     return (airport_ids)
 
 
-def insert_or_update(db_name, db_table, entry_list):
+def insert_or_update(db_name, db_table, our_dictionary):
     '''
     Бере список фільмів і закидає їх у таблицю бази даних.
     Оновлює запис (або створює новий) у базі даних.
@@ -47,8 +48,8 @@ def insert_or_update(db_name, db_table, entry_list):
     #     table.update(dict_by_title, ['imdb_id'])
     # print('\nentry updateted')
     # else:
-    table.insert(entry_list)
-    print('all done!')
+    table.insert(our_dictionary)
+    # print('all done!')
 
 
 def clearoff_rb_on_csv(csv_filename):
@@ -72,20 +73,101 @@ def clearoff_rb_on_csv(csv_filename):
     # print(airport_ids)
 
 
-if __name__ == '__main__':
-    city=
-    with open("new_{:02d}_{}.csv".format(0, city_), "wb") as file_new:
-        for item in dictlist[1:]:
-            print(item+'\n')
-            file_new.write(bytes(source_data[:-7].join('\n'), 'UTF-8'))
-
-    # cities = parse_airport_IDs('airport_identifiers_andrew.csv')
+def join_history_csv_to_sql():
+    cities = parse_airport_IDs('airport_identifiers_andrew.csv')
     # for city in cities:
-    #     dictlist = clearoff_rb_on_csv('{:02d}_{}.csv'.format(cities.index(city), city))
-    #     # print(dictlist[1:])
-    #     with open("new_{:02d}_{}.csv".format(cities.index(city), city), "wb") as file_new:
-    #         for item in dictlist[1:]:
-    #             # print(item+'\n')
-    #             # file_new.write(bytes(source_data[:-7].join('\n'), 'UTF-8'))
-    #             file_new.write(bytes(item + '\n', 'UTF-8'))
+    city = 'LAX'
+    with open("new_{:02d}_{}.csv".format(00, city)) as file:
+    # with open("new_{:02d}_{}.csv".format(cities.index(city), city)) as file:
+        dict_list = []
+        c = 0
+        for line in file:
+            if c == 0:
+                line1 = line.split(',')
+                line1[0] = 'Date'
+                line1.append('City_Date')
+                # print(line1)
+                c += 1
+            else:
+                linec = line.split(',')
+                for item in linec:
+                    try:
+                        linec[linec.index(item)] = int(item)
+                    except:
+                        pass
+                dict = {}
+                linec.append(city + '_' + linec[0])
+                # print(linec)
+                for entry in line1:
+                    indexx = line1.index(entry)
+                    dict[entry] = linec[indexx]
+                dict_list.append(dict)
+                c += 1
+    db_name = 'sqlite:///clear_takeoff.db'
+    db_table = 'Weather_subset'
+    for dictionary in dict_list:
+        insert_or_update(db_name, db_table, dictionary)
+    print('all done for {}!'.format(city))
+
+
+def delay_csv_to_sql():
+    # for andrews csv
+    db_name = 'sqlite:///clear_takeoff.db'
+    db_table = 'Delays'
+    with open("subset.csv") as file:
+        # dict_list = []
+        c = 0
+        for line in file:
+            if c == 0:
+                line1 = line.split(',')
+                line1[0] = 'old_id'
+                line1[1] = 'irrel_id'
+                line1[3] = 'FL_DATE'
+                line1[5] = 'ORIGIN'
+                line1[6] = 'DEST'
+                line1.append('ORIGIN_DATE')
+                line1.append('DEST_DATE')
+                # print(line1)
+                c += 1
+            else:
+                linec = line.split(',')
+                for item in linec:
+                    try:
+                        linec[linec.index(item)] = int(item)
+                    except:
+                        pass
+                dict = {}
+                linec.append(linec[5].strip('"') + '_' + linec[3].strip('"'))
+                linec.append(linec[6].strip('"') + '_' + linec[3].strip('"'))
+                # print(linec)
+                for entry in line1:
+                    indexx = line1.index(entry)
+                    dict[entry] = linec[indexx]
+                insert_or_update(db_name, db_table, dict)
+                print('all done for entry {}!'.format(c))
+                # dict_list.append(dict)
+                c += 1
+
+
+def join_query(db_name, table_name1, table_name2, cond1, cond2, res):
+    db = dataset.connect(db_name)
+    result = db.query('SELECT * FROM {} JOIN {} [ON ({}={})]'.format(table_name1, table_name2, cond1, cond2))
+    for row in result:
+        print(row)
+        db_name[res].insert(row)
     pass
+
+if __name__ == '__main__':
+    join_history_csv_to_sql()
+    # delay_csv_to_sql()
+    # db = 'sqlite:///clear_takeoff.db'
+    # table_name1 = 'Delays'
+    # table_name2 = 'Weather'
+    # cond1 = 'ORIGIN_DATE'
+    # cond2 = 'City_Date'
+    # cond11 = 'DEST_DATE'
+    # cond22 = 'City_Date'
+    # join_query(db, table_name1, table_name2, cond1, cond2, 'result1')
+    # join_query(db, table_name1, table_name2, cond1, cond2, 'final_table')
+    pass
+# SELECT * FROM Delays OUTER JOIN Weather [ON (ORIGIN_DATE=City_Date)]
