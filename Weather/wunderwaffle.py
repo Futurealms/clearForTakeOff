@@ -13,7 +13,7 @@ def get_weath_hist(cities):
         inst = requests.get(url)
         print(url)
 
-        with open("{:02d}_{}.csv".format(cities.index(city), city), "wb") as f:
+        with open("{:03d}_{}.csv".format(cities.index(city), city), "wb") as f:
             f.write(bytes(inst.text, 'UTF-8'))
 
 
@@ -61,7 +61,7 @@ def clearoff_rb_on_csv(csv_filename):
             # source_id = line.split(',')[5].strip('"')
             # print(source_data)
             source_1 = source_data[:-7].split(',')
-            source_2=source_data[:-7]
+            source_2 = source_data[:-7]
             print(source_1)
             # bundle.append(source_1)
             print(source_2)
@@ -71,21 +71,21 @@ def clearoff_rb_on_csv(csv_filename):
     # airport_ids = airport_ids[1:]
     # print(airport_ids)
 
-if __name__ == '__main__':
-    # airport_ids=parse_airport_IDs("airport_identifiers_andrew.csv")
-    # get_weath_hist(airport_ids)
 
-    # with open("{:02d}_{}.csv".format(cities.index(city), city), "wb") as f:
-    # with open("_{:02d}_{}.csv".format(0, city), "wb") as f:
-    #     for list in dictlist[1:0]:
-    #         f.write(bytes(list, 'UTF-8'))
-    cities = parse_airport_IDs('airport_identifiers_andrew.csv')
-    for city in cities:
-        dictlist = clearoff_rb_on_csv('{:02d}_{}.csv'.format(cities.index(city), city))
-        # print(dictlist[1:])
-        with open("new_{:02d}_{}.csv".format(cities.index(city), city), "wb") as file_new:
-            for item in dictlist[1:]:
-                # print(item+'\n')
-                # file_new.write(bytes(source_data[:-7].join('\n'), 'UTF-8'))
-                file_new.write(bytes(item+'\n', 'UTF-8'))
+if __name__ == '__main__':
+    city=
+    with open("new_{:02d}_{}.csv".format(0, city_), "wb") as file_new:
+        for item in dictlist[1:]:
+            print(item+'\n')
+            file_new.write(bytes(source_data[:-7].join('\n'), 'UTF-8'))
+
+    # cities = parse_airport_IDs('airport_identifiers_andrew.csv')
+    # for city in cities:
+    #     dictlist = clearoff_rb_on_csv('{:02d}_{}.csv'.format(cities.index(city), city))
+    #     # print(dictlist[1:])
+    #     with open("new_{:02d}_{}.csv".format(cities.index(city), city), "wb") as file_new:
+    #         for item in dictlist[1:]:
+    #             # print(item+'\n')
+    #             # file_new.write(bytes(source_data[:-7].join('\n'), 'UTF-8'))
+    #             file_new.write(bytes(item + '\n', 'UTF-8'))
     pass
