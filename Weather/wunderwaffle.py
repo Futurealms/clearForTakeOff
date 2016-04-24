@@ -159,6 +159,7 @@ def join_query(db_name, table_name1, table_name2, cond1, cond2, res):
 
 if __name__ == '__main__':
     join_history_csv_to_sql()
+    delay_csv_to_sql()
     # delay_csv_to_sql()
     # db = 'sqlite:///clear_takeoff.db'
     # table_name1 = 'Delays'
